@@ -2084,7 +2084,7 @@ class String
   def sub(pattern : Regex)
     sub_append(pattern) do |str, match, buffer|
       $~ = match
-      buffer << yield str, match
+      buffer << yield({str, match})
     end
   end
 
@@ -2143,7 +2143,7 @@ class String
   # "hello".sub(/(he|l|o)/, {"l": "la"})             # => "hello"
   # ```
   def sub(pattern : Regex, hash : Hash(String, _) | NamedTuple)
-    sub(pattern) do |match|
+    sub(pattern) do |match, _|
       if hash.has_key?(match)
         hash[match]
       else
@@ -2217,7 +2217,7 @@ class String
       buffer.write unsafe_byte_slice(0, match.byte_begin)
       str = match[0]
       $~ = match
-      yield str, match, buffer
+      yield({str, match, buffer})
       buffer.write unsafe_byte_slice(match.byte_begin + str.bytesize)
     end
   end
@@ -2295,7 +2295,7 @@ class String
   # "hello".sub(1..2, "eee") # => "heeelo"
   # ```
   def sub(range : Range, replacement : String)
-    sub_range(range, replacement) do |buffer|
+    sub_range(range, replacement) do |buffer, _|
       buffer.copy_from(replacement.to_unsafe, replacement.bytesize)
       buffer += replacement.bytesize
       {buffer, 0}
@@ -2320,7 +2320,7 @@ class String
     String.new(new_bytesize) do |buffer|
       buffer.copy_from(to_unsafe, from_index)
       buffer += from_index
-      buffer, length = yield buffer, from_index, to_index
+      buffer, length = yield({buffer, from_index, to_index})
       buffer.copy_from(to_unsafe + to_index, bytesize - to_index)
       {new_bytesize, length}
     end
@@ -2442,7 +2442,7 @@ class String
   def gsub(pattern : Regex)
     gsub_append(pattern) do |string, match, buffer|
       $~ = match
-      buffer << yield string, match
+      buffer << yield({string, match})
     end
   end
 
@@ -2503,7 +2503,7 @@ class String
   # "hello".gsub(/(he|l|o)/, {"he": "ha", "l": "la"}) # => "halala"
   # ```
   def gsub(pattern : Regex, hash : Hash(String, _) | NamedTuple)
-    gsub(pattern) do |match|
+    gsub(pattern) do |match, _|
       hash[match]?
     end
   end
@@ -2595,7 +2595,7 @@ class String
         buffer.write unsafe_byte_slice(last_byte_offset, index - last_byte_offset)
         str = match[0]
         $~ = match
-        yield str, match, buffer
+        yield({str, match, buffer})
 
         if str.bytesize == 0
           byte_offset = index + 1
@@ -4398,7 +4398,7 @@ class String
   # from there.
   def each_char_with_index(offset = 0)
     each_char do |char|
-      yield char, offset
+      yield({char, offset})
       offset += 1
     end
   end
@@ -4600,7 +4600,7 @@ class String
   private def dump_or_inspect(io)
     io << '"'
     dump_or_inspect_unquoted(io) do |char, error|
-      yield char, error
+      yield({char, error})
     end
     io << '"'
   end
@@ -4633,10 +4633,10 @@ class String
       else
         if reader.error
           reader.current_char_width.times do |i|
-            yield '\0', to_unsafe[reader.pos + i]
+            yield({'\0', to_unsafe[reader.pos + i]})
           end
         else
-          yield current_char, nil
+          yield({current_char, nil})
         end
       end
       reader.next_char
@@ -4933,7 +4933,7 @@ class String
     char_index = 0
 
     while byte_index < bytesize
-      yield byte_index, char_index
+      yield({byte_index, char_index})
       byte_index += char_bytesize_at(byte_index)
       char_index += 1
     end

@@ -327,10 +327,10 @@ struct Slice(T)
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index!(offset = 0, &block : (T, Int32) -> T)
+  def map_with_index!(offset = 0, &block : {T, Int32} -> T)
     check_writable
 
-    @pointer.map_with_index!(size) { |e, i| yield e, offset + i }
+    @pointer.map_with_index!(size) { |e, i| yield({e, offset + i}) }
     self
   end
 
@@ -338,8 +338,8 @@ struct Slice(T)
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index(offset = 0, *, read_only = false, &block : (T, Int32) -> U) forall U
-    Slice.new(size, read_only: read_only) { |i| yield @pointer[i], offset + i }
+  def map_with_index(offset = 0, *, read_only = false, &block : {T, Int32} -> U) forall U
+    Slice.new(size, read_only: read_only) { |i| yield({@pointer[i], offset + i}) }
   end
 
   def copy_from(source : Pointer(T), count)

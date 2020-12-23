@@ -192,7 +192,7 @@ module Crystal
         strings.push({arg.to_s, @last.to_s})
       end
 
-      max_size = strings.max_of &.[0].size
+      max_size = strings.max_of &.size
       strings.each do |left, right|
         @program.stdout.puts "#{left.ljust(max_size)} # => #{right}"
       end
@@ -397,7 +397,7 @@ module Crystal
 
     def interpret_two_args_method(method, args)
       interpret_check_args_size method, args, 2
-      yield args[0], args[1]
+      yield({args[0], args[1]})
     end
 
     def interpret_check_args_size(method, args, size)
@@ -510,11 +510,11 @@ module Crystal
     end
 
     def bool_bin_op(op, args)
-      BoolLiteral.new(bin_op(op, args) { |me, other| yield me, other })
+      BoolLiteral.new(bin_op(op, args) { |me, other| yield({me, other}) })
     end
 
     def num_bin_op(op, args)
-      NumberLiteral.new(bin_op(op, args) { |me, other| yield me, other })
+      NumberLiteral.new(bin_op(op, args) { |me, other| yield({me, other}) })
     end
 
     def int_bin_op(op, args)
@@ -528,7 +528,7 @@ module Crystal
           raise "argument to NumberLiteral##{op} can't be float literal: #{self}"
         end
 
-        yield me.to_i, other.to_i
+        yield({me.to_i, other.to_i})
       end)
     end
 
@@ -542,7 +542,7 @@ module Crystal
         raise "can't #{op} with #{other}"
       end
 
-      yield(to_number, other.to_number)
+      yield({to_number, other.to_number})
     end
 
     def to_number

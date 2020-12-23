@@ -1099,7 +1099,7 @@ class Crystal::TopLevelVisitor < Crystal::SemanticVisitor
       when @program.raises_annotation
         node.raises = true
       else
-        yield annotation_type, ann
+        yield({annotation_type, ann})
       end
     end
   end

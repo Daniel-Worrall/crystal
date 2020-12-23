@@ -381,7 +381,7 @@ module Crystal
         cmdsize = @io.read_bytes(UInt32, endianness)
 
         if cmd == load_command
-          yield cmd, cmdsize
+          yield({cmd, cmdsize})
         else
           @io.skip(cmdsize - 8)
         end
@@ -501,7 +501,7 @@ module Crystal
     def read_section?(name)
       if sh = sections.find { |s| s.sectname == name }
         @io.seek(sh.offset) do
-          yield sh, @io
+          yield({sh, @io})
         end
       end
     end

@@ -1199,16 +1199,16 @@ class Array(T)
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index(offset = 0, &block : T, Int32 -> U) forall U
-    Array(U).new(size) { |i| yield @buffer[i], offset + i }
+  def map_with_index(offset = 0, &block : {T, Int32} -> U) forall U
+    Array(U).new(size) { |i| yield({@buffer[i], offset + i}) }
   end
 
   # Like `map_with_index`, but mutates `self` instead of allocating a new object.
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index!(offset = 0, &block : (T, Int32) -> T)
-    to_unsafe.map_with_index!(size) { |e, i| yield e, offset + i }
+  def map_with_index!(offset = 0, &block : {T, Int32} -> T)
+    to_unsafe.map_with_index!(size) { |e, i| yield({e, offset + i}) }
     self
   end
 
@@ -1614,7 +1614,7 @@ class Array(T)
   end
 
   def product(enumerable : Enumerable, &block)
-    self.each { |a| enumerable.each { |b| yield a, b } }
+    self.each { |a| enumerable.each { |b| yield({a, b}) } }
   end
 
   # Append. Pushes one value to the end of `self`, given that the type of the value is *T*

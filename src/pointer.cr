@@ -388,7 +388,7 @@ struct Pointer(T)
   # from there.
   def map_with_index!(count : Int, offset = 0, &block)
     count.times do |i|
-      self[i] = yield self[i], offset + i
+      self[i] = yield({self[i], offset + i})
     end
     self
   end

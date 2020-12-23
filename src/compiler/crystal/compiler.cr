@@ -594,7 +594,7 @@ module Crystal
     private def process_wrapper(command, args = nil)
       print_command(command, args) if verbose?
 
-      status = yield command, args
+      status = yield({command, args})
 
       unless status.success?
         msg = status.normal_exit? ? "code: #{status.exit_code}" : "signal: #{status.exit_signal} (#{status.exit_signal.value})"

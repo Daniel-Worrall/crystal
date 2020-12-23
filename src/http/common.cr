@@ -76,7 +76,7 @@ module HTTP
 
         check_content_type_charset(body, headers)
 
-        yield headers, body
+        yield({headers, body})
         return
       else # HeaderLine
         max_size -= header_line.bytesize

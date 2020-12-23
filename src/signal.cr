@@ -238,7 +238,7 @@ module Crystal::Signal
   # signal to the parent. Exec will reset the signals properly for the
   # sub-process.
   def self.after_fork_before_exec
-    ::Signal.each do |signal|
+    ::Signal.each do |signal, _|
       LibC.signal(signal, LibC::SIG_DFL) if signal.set?
     end
   ensure

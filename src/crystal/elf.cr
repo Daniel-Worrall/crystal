@@ -213,7 +213,7 @@ module Crystal
     def read_section?(name : String)
       if sh = section_headers.find { |sh| sh_name(sh.name) == name }
         @io.seek(sh.offset) do
-          yield sh, @io
+          yield({sh, @io})
         end
       end
     end

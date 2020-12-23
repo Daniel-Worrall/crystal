@@ -65,7 +65,7 @@ module MIME::Multipart
         headers = parse_headers(body_io)
 
         begin
-          yield headers, body_io
+          yield({headers, body_io})
         ensure
           body_io.skip_to_end
           body_io.close

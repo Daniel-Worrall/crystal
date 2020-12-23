@@ -58,7 +58,7 @@ module Crystal::System::Env
   end
 
   # Iterates all environment variables.
-  def self.each(&block : String, String ->)
+  def self.each(&block : {String, String} ->)
     orig_pointer = pointer = LibC.GetEnvironmentStringsW
     raise RuntimeError.from_winerror("GetEnvironmentStringsW") if pointer.null?
 
@@ -69,7 +69,7 @@ module Crystal::System::Env
         # The actual env variables are preceded by these weird lines in the output:
         # "=::=::\", "=C:=c:\foo\bar", "=ExitCode=00000000" -- skip them.
         next if key.empty?
-        yield key, value
+        yield({key, value})
       end
     ensure
       LibC.FreeEnvironmentStringsW(orig_pointer)

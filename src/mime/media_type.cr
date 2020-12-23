@@ -94,9 +94,9 @@ module MIME
     end
 
     # Calls the given block for each parameter and passes in the key and the value.
-    def each_parameter(&block : String, String -> _) : Nil
+    def each_parameter(&block : {String, String} -> _) : Nil
       @params.each do |key, value|
-        yield key, value
+        yield({key, value})
       end
     end
 

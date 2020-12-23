@@ -430,7 +430,7 @@ struct Tuple
     {% begin %}
       Tuple.new(
         {% for i in 0...T.size %}
-          (yield self[{{i}}], offset + {{i}}),
+          (yield({self[{{i}}], offset + {{i}}})),
         {% end %}
       )
     {% end %}

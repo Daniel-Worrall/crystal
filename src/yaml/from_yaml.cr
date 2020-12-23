@@ -159,7 +159,7 @@ def Hash.new(ctx : YAML::ParseContext, node : YAML::Nodes::Node)
   end
 
   YAML::Schema::Core.each(node) do |key, value|
-    yield K.new(ctx, key), V.new(ctx, value)
+    yield({K.new(ctx, key), V.new(ctx, value)})
   end
 end
 

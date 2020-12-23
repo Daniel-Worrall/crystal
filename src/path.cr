@@ -528,7 +528,7 @@ struct Path
       end
 
       start_pos = reader.pos
-      yield 0, start_pos
+      yield({0, start_pos})
     end
 
     last_was_separator = false
@@ -538,7 +538,7 @@ struct Path
       reader, last_was_separator, start_pos = next_part
 
       break if reader.pos == start_pos
-      yield start_pos, reader.pos - start_pos
+      yield({start_pos, reader.pos - start_pos})
     end
   end
 

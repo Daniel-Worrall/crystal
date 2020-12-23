@@ -246,8 +246,8 @@ struct StaticArray(T, N)
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index!(offset = 0, &block : (T, Int32) -> T)
-    to_unsafe.map_with_index!(size) { |e, i| yield e, offset + i }
+  def map_with_index!(offset = 0, &block : {T, Int32} -> T)
+    to_unsafe.map_with_index!(size) { |e, i| yield({e, offset + i}) }
     self
   end
 
@@ -255,8 +255,8 @@ struct StaticArray(T, N)
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index(offset = 0, &block : (T, Int32) -> U) forall U
-    StaticArray(U, N).new { |i| yield to_unsafe[i], offset + i }
+  def map_with_index(offset = 0, &block : {T, Int32} -> U) forall U
+    StaticArray(U, N).new { |i| yield({to_unsafe[i], offset + i}) }
   end
 
   # Reverses the elements of this array in-place, then returns `self`.

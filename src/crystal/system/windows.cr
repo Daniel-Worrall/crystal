@@ -4,10 +4,10 @@ module Crystal::System
     buffer_size = 256
     buffer_arr = uninitialized LibC::WCHAR[256]
 
-    buffer_size = yield buffer_arr.to_slice, true
+    buffer_size = yield({buffer_arr.to_slice, true})
     buffer = Slice(LibC::WCHAR).new(buffer_size)
 
-    yield buffer, false
+    yield({buffer, false})
     raise "BUG: retry_wstr_buffer returned"
   end
 end

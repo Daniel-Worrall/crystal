@@ -51,7 +51,7 @@ class Crystal::Doc::Markdown::DocRenderer < Crystal::Doc::Markdown::HTMLRenderer
       ((?:\B::)?\b[A-Z]\w+(?:\:\:[A-Z]\w+)*|\B|(?<=\bself))([#.])([\w<=>+\-*\/\[\]&|?!^~]+[?!]?)(?:\((.*?)\))?
         |
       ((?:\B::)?\b[A-Z]\w+(?:\:\:[A-Z]\w+)*)
-      )x do |match_text|
+      )x do |match_text, _|
       if $5?
         # Type
         another_type = @type.lookup_path(match_text)

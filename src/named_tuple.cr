@@ -384,7 +384,7 @@ struct NamedTuple
   # ```
   def each : Nil
     {% for key in T %}
-      yield {{key.symbolize}}, self[{{key.symbolize}}]
+      yield({ {{key.symbolize}}, self[{{key.symbolize}}]})
     {% end %}
   end
 
@@ -448,7 +448,7 @@ struct NamedTuple
   def each_with_index(offset = 0)
     i = offset
     each do |key, value|
-      yield key, value, i
+      yield({key, value, i})
       i += 1
     end
   end
@@ -461,9 +461,9 @@ struct NamedTuple
   # tuple.map { |k, v| "#{k}: #{v}" } # => ["name: Crystal", "year: 2011"]
   # ```
   def map
-    array = Array(typeof(yield first_key_internal, first_value_internal)).new(size)
+    array = Array(typeof(yield({first_key_internal, first_value_internal}))).new(size)
     each do |k, v|
-      array.push yield k, v
+      array.push yield({k, v})
     end
     array
   end

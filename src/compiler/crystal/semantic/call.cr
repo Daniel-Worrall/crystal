@@ -501,7 +501,7 @@ class Crystal::Call
       index += instance_type.size if index < 0
       in_bounds = (0 <= index < instance_type.size)
       if nilable || in_bounds
-        indexer_def = yield instance_type, (in_bounds ? index : -1)
+        indexer_def = yield({instance_type, (in_bounds ? index : -1)})
         indexer_match = Match.new(indexer_def, arg_types, MatchContext.new(owner, owner))
         return Matches.new([indexer_match] of Match, true)
       elsif instance_type.size == 0
@@ -519,7 +519,7 @@ class Crystal::Call
       name = arg.value
       index = instance_type.name_index(name)
       if index || nilable
-        indexer_def = yield instance_type, (index || -1)
+        indexer_def = yield({instance_type, (index || -1)})
         indexer_match = Match.new(indexer_def, arg_types, MatchContext.new(owner, owner))
         return Matches.new([indexer_match] of Match, true)
       else

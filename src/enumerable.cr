@@ -203,14 +203,14 @@ module Enumerable(T)
         acc.add(val)
       else
         if tuple = acc.fetch
-          yield(*tuple)
+          yield(tuple)
         end
         acc.init(key, val)
       end
     end
 
     if tuple = acc.fetch
-      yield(*tuple)
+      yield(tuple)
     end
   end
 
@@ -338,14 +338,14 @@ module Enumerable(T)
   # Chunks of more than two items can be iterated using `#each_cons`.
   # This method is just an optimized implementation for the special case of
   # `size == 2` to avoid heap allocations.
-  def each_cons_pair(& : (T, T) -> _) : Nil
+  def each_cons_pair(& : {T, T} -> _) : Nil
     last_elem = uninitialized T
     first_iteration = true
     each do |elem|
       if first_iteration
         first_iteration = false
       else
-        yield last_elem, elem
+        yield({last_elem, elem})
       end
       last_elem = elem
     end
@@ -441,7 +441,7 @@ module Enumerable(T)
   def each_with_index(offset = 0)
     i = offset
     each do |elem|
-      yield elem, i
+      yield({elem, i})
       i += 1
     end
   end
@@ -457,7 +457,7 @@ module Enumerable(T)
   # ```
   def each_with_object(obj)
     each do |elem|
-      yield elem, obj
+      yield({elem, obj})
     end
     obj
   end
@@ -666,7 +666,7 @@ module Enumerable(T)
     found = false
 
     each do |elem|
-      memo = found ? (yield memo, elem) : elem
+      memo = found ? (yield({memo, elem})) : elem
       found = true
     end
 
@@ -681,7 +681,7 @@ module Enumerable(T)
   # ```
   def reduce(memo)
     each do |elem|
-      memo = yield memo, elem
+      memo = yield({memo, elem})
     end
     memo
   end
@@ -697,7 +697,7 @@ module Enumerable(T)
     found = false
 
     each do |elem|
-      memo = found ? (yield memo, elem) : elem
+      memo = found ? (yield({memo, elem})) : elem
       found = true
     end
 
@@ -724,7 +724,7 @@ module Enumerable(T)
   # ```
   def join(separator = "", & : T ->)
     String.build do |io|
-      join(io, separator) do |elem|
+      join(io, separator) do |elem, _|
         io << yield elem
       end
     end
@@ -797,7 +797,7 @@ module Enumerable(T)
   @[Deprecated(%(Use `#join(io : IO, separator = "", & : T, IO ->) instead`))]
   def join(separator, io : IO)
     join(io, separator) do |elem, io|
-      yield elem, io
+      yield({elem, io})
     end
   end
 
@@ -821,9 +821,9 @@ module Enumerable(T)
   #
   # Accepts an optional *offset* parameter, which tells it to start counting
   # from there.
-  def map_with_index(offset = 0, &block : T, Int32 -> U) forall U
+  def map_with_index(offset = 0, &block : {T, Int32} -> U) forall U
     ary = [] of U
-    each_with_index(offset) { |e, i| ary << yield e, i }
+    each_with_index(offset) { |e, i| ary << yield({e, i}) }
     ary
   end
 

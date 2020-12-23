@@ -27,7 +27,7 @@ module MIME::Multipart
   def self.parse(io, boundary)
     parser = Parser.new(io, boundary)
     while parser.has_next?
-      parser.next { |headers, io| yield headers, io }
+      parser.next { |headers, io| yield({headers, io}) }
     end
   end
 
@@ -74,7 +74,7 @@ module MIME::Multipart
 
     body = request.body
     return nil unless body
-    parse(body, boundary) { |headers, io| yield headers, io }
+    parse(body, boundary) { |headers, io| yield({headers, io}) }
   end
 
   # Yields a `Multipart::Builder` to the given block, writing to *io* and

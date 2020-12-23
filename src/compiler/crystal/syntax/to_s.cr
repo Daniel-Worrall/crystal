@@ -177,7 +177,7 @@ module Crystal
 
     def visit(node : NamedTupleLiteral)
       @str << '{'
-      node.entries.join(@str, ", ") do |entry|
+      node.entries.join(@str, ", ") do |entry, _|
         visit_named_arg_name(entry.key)
         @str << ": "
         entry.value.accept self
@@ -902,7 +902,7 @@ module Crystal
       printed_arg = false
 
       @str << '('
-      node.type_vars.join(@str, ", ") do |var|
+      node.type_vars.join(@str, ", ") do |var, _|
         var.accept self
         printed_arg = true
       end
@@ -1167,7 +1167,7 @@ module Crystal
       end
       if node.args.size > 0
         @str << '('
-        node.args.join(@str, ", ") do |arg|
+        node.args.join(@str, ", ") do |arg, _|
           if arg_name = arg.name
             @str << arg_name << " : "
           end

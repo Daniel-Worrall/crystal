@@ -1192,7 +1192,7 @@ module Iterator(T)
   def with_index(offset : Int = 0)
     index = offset
     each do |value|
-      yield value, index
+      yield({value, index})
       index += 1
     end
   end

@@ -696,7 +696,7 @@ struct Int
     end
 
     count = (ptr_end - ptr).to_i32
-    yield ptr, count
+    yield({ptr, count})
   end
 
   # Writes this integer to the given *io* in the given *format*.

@@ -176,7 +176,7 @@ struct Number
   # ```
   #
   # See `Int#humanize_bytes` to format a file size.
-  def humanize(io : IO, precision = 3, separator = '.', delimiter = ',', *, base = 10 ** 3, significant = true, &prefixes : (Int32, Float64) -> {Int32, _} | {Int32, _, Bool}) : Nil
+  def humanize(io : IO, precision = 3, separator = '.', delimiter = ',', *, base = 10 ** 3, significant = true, &prefixes : {Int32, Float64} -> {Int32, _} | {Int32, _, Bool}) : Nil
     if zero?
       digits = 0
     else
@@ -193,7 +193,7 @@ struct Number
       magnitude = 1
     end
 
-    magnitude, unit = yield_result = yield magnitude, self.to_f
+    magnitude, unit = yield_result = yield({magnitude, self.to_f})
 
     decimal_places = precision
     if significant
@@ -226,7 +226,7 @@ struct Number
   def humanize(precision = 3, separator = '.', delimiter = ',', *, base = 10 ** 3, significant = true) : String
     String.build do |io|
       humanize(io, precision, separator, delimiter, base: base, significant: significant) do |magnitude, number|
-        yield magnitude, number
+        yield({magnitude, number})
       end
     end
   end
@@ -282,7 +282,7 @@ struct Int
   #
   # See `Number#humanize` for more details on the behaviour and arguments.
   def humanize_bytes(io : IO, precision : Int = 3, separator = '.', *, significant : Bool = true, format : BinaryPrefixFormat = :IEC) : Nil
-    humanize(io, precision, separator, nil, base: 1024, significant: significant) do |magnitude|
+    humanize(io, precision, separator, nil, base: 1024, significant: significant) do |magnitude, _|
       magnitude = Number.prefix_index(magnitude)
 
       prefix = Number.si_prefix(magnitude)

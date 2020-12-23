@@ -148,7 +148,7 @@ module Indexable(T)
   # [2, 5, 7, 10].bsearch { |x| x > 10 } # => nil
   # ```
   def bsearch(&block : T -> Bool)
-    bsearch_index { |value| yield value }.try { |index| unsafe_fetch(index) }
+    bsearch_index { |value, _| yield value }.try { |index| unsafe_fetch(index) }
   end
 
   # By using binary search, returns the index of the first element
@@ -166,8 +166,8 @@ module Indexable(T)
   # [2, 5, 7, 10].bsearch_index { |x, i| x >= 4 } # => 1
   # [2, 5, 7, 10].bsearch_index { |x, i| x > 10 } # => nil
   # ```
-  def bsearch_index(&block : T, Int32 -> Bool)
-    (0...size).bsearch { |index| yield unsafe_fetch(index), index }
+  def bsearch_index(&block : {T, Int32} -> Bool)
+    (0...size).bsearch { |index| yield({unsafe_fetch(index), index}) }
   end
 
   # Calls the given block once for each element in `self`, passing that
@@ -408,7 +408,7 @@ module Indexable(T)
   def equals?(other : Indexable)
     return false if size != other.size
     each_with_index do |item, i|
-      return false unless yield(item, other.unsafe_fetch(i))
+      return false unless yield({item, other.unsafe_fetch(i)})
     end
     true
   end
@@ -429,7 +429,7 @@ module Indexable(T)
   def equals?(other)
     return false if size != other.size
     each_with_index do |item, i|
-      return false unless yield(item, other[i])
+      return false unless yield({item, other[i]})
     end
     true
   end

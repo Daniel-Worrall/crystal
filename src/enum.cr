@@ -309,7 +309,7 @@ struct Enum
       {% for member in @type.constants %}
         {% if member.stringify != "All" %}
           if includes?(self.class.new({{@type.constant(member)}}))
-            yield self.class.new({{@type.constant(member)}}), {{@type.constant(member)}}
+            yield({self.class.new({{@type.constant(member)}}), {{@type.constant(member)}}})
           end
         {% end %}
       {% end %}
@@ -471,7 +471,7 @@ struct Enum
   def self.each
     {% for member in @type.constants %}
       {% unless @type.has_attribute?("Flags") && %w(none all).includes?(member.stringify.downcase) %}
-        yield new({{@type.constant(member)}}), {{@type.constant(member)}}
+        yield({new({{@type.constant(member)}}), {{@type.constant(member)}}})
       {% end %}
     {% end %}
   end

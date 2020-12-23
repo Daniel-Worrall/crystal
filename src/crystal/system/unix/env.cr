@@ -37,7 +37,7 @@ module Crystal::System::Env
   end
 
   # Iterates all environment variables.
-  def self.each(&block : String, String ->)
+  def self.each(&block : {String, String} ->)
     environ_ptr = LibC.environ
     while environ_ptr
       environ_value = environ_ptr.value
@@ -45,7 +45,7 @@ module Crystal::System::Env
         key_value = String.new(environ_value).split('=', 2)
         key = key_value[0]
         value = key_value[1]? || ""
-        yield key, value
+        yield({key, value})
         environ_ptr += 1
       else
         break

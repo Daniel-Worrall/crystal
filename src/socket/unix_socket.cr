@@ -84,7 +84,7 @@ class UNIXSocket < Socket
   def self.pair(type : Type = Type::STREAM)
     left, right = pair(type)
     begin
-      yield left, right
+      yield({left, right})
     ensure
       left.close
       right.close

@@ -405,7 +405,7 @@ class Time::Location
     when transitions.empty? || unix_seconds < transitions.first.when
       return lookup_first_zone, {Int64::MIN, transitions[0]?.try(&.when) || Int64::MAX}
     else
-      tx_index = transitions.bsearch_index do |transition|
+      tx_index = transitions.bsearch_index do |transition, _|
         transition.when > unix_seconds
       end || transitions.size
 

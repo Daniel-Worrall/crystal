@@ -814,7 +814,7 @@ class HTTP::Client
     end
 
     exec(uri, tls) do |client, path|
-      yield client, path
+      yield({client, path})
     end
   end
 
@@ -863,7 +863,7 @@ class HTTP::Client
       if user && password
         client.basic_auth(user, password)
       end
-      yield client, path
+      yield({client, path})
     end
   end
 

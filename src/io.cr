@@ -152,7 +152,7 @@ abstract class IO
   def self.pipe(read_blocking = false, write_blocking = false)
     r, w = IO.pipe(read_blocking, write_blocking)
     begin
-      yield r, w
+      yield({r, w})
     ensure
       w.flush
       r.close

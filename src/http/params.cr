@@ -60,9 +60,9 @@ module HTTP
           buffer.clear
 
           if key
-            yield key.not_nil!, value
+            yield({key.not_nil!, value})
           else
-            yield value, "" unless value.empty?
+            yield({value, ""}) unless value.empty?
           end
 
           key = nil
@@ -74,9 +74,9 @@ module HTTP
       end
 
       if key
-        yield key.not_nil!, buffer.to_s
+        yield({key.not_nil!, buffer.to_s})
       else
-        yield buffer.to_s, "" unless buffer.empty?
+        yield({buffer.to_s, ""}) unless buffer.empty?
       end
     end
 

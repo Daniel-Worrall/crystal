@@ -1452,7 +1452,7 @@ module Crystal
           block.args.each_with_index do |arg, i|
             block_var = block_context.vars[arg.name]
             if i == splat_index
-              exp_value = allocate_tuple(arg.type.as(TupleInstanceType)) do |tuple_type|
+              exp_value = allocate_tuple(arg.type.as(TupleInstanceType)) do |tuple_type, _|
                 exp_value2, exp_type = exp_values[j]
                 j += 1
                 {exp_type, exp_value2}
@@ -1907,7 +1907,7 @@ module Crystal
     def allocate_tuple(type)
       struct_type = alloca llvm_type(type)
       type.tuple_types.each_with_index do |tuple_type, i|
-        exp_type, value = yield tuple_type, i
+        exp_type, value = yield({tuple_type, i})
         assign aggregate_index(struct_type, i), tuple_type, exp_type, value
       end
       struct_type

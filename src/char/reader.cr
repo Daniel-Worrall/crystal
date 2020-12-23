@@ -120,7 +120,7 @@ struct Char
         raise IndexError.new
       end
 
-      decode_char_at(next_pos) do |code_point|
+      decode_char_at(next_pos) do |code_point, _, _|
         code_point.unsafe_chr
       end
     end
@@ -187,7 +187,7 @@ struct Char
     private def decode_char_at(pos)
       first = byte_at(pos)
       if first < 0x80
-        return yield first, 1, nil
+        return yield({first, 1, nil})
       end
 
       if first < 0xc2
@@ -200,7 +200,7 @@ struct Char
       end
 
       if first < 0xe0
-        return yield (first << 6) &+ (second &- 0x3080), 2, nil
+        return yield({(first << 6) &+ (second &- 0x3080), 2, nil})
       end
 
       third = byte_at(pos + 2)
@@ -217,7 +217,7 @@ struct Char
           invalid_byte_sequence
         end
 
-        return yield (first << 12) &+ (second << 6) &+ (third &- 0xE2080), 3, nil
+        return yield({(first << 12) &+ (second << 6) &+ (third &- 0xE2080), 3, nil})
       end
 
       if first == 0xf0 && second < 0x90
@@ -234,14 +234,14 @@ struct Char
       end
 
       if first < 0xf5
-        return yield (first << 18) &+ (second << 12) &+ (third << 6) &+ (fourth &- 0x3C82080), 4, nil
+        return yield({(first << 18) &+ (second << 12) &+ (third << 6) &+ (fourth &- 0x3C82080), 4, nil})
       end
 
       invalid_byte_sequence
     end
 
     private macro invalid_byte_sequence
-      return yield Char::REPLACEMENT.ord, 1, first.to_u8
+      return yield({Char::REPLACEMENT.ord, 1, first.to_u8})
     end
 
     @[AlwaysInline]

@@ -215,7 +215,7 @@ module Crystal
     # def's splat index.
     def match(objects, &block)
       Splat.match(self, objects) do |arg, arg_index, object, object_index|
-        yield arg, arg_index, object, object_index
+        yield({arg, arg_index, object, object_index})
       end
     end
 
@@ -241,7 +241,7 @@ module Crystal
     # macro's splat index.
     def match(objects, &block)
       Splat.match(self, objects) do |arg, arg_index, object, object_index|
-        yield arg, arg_index, object, object_index
+        yield({arg, arg_index, object, object_index})
       end
     end
 
@@ -337,10 +337,10 @@ module Crystal
     # def's splat index.
     def self.match(a_def, objects, &block)
       Splat.before(a_def, objects) do |arg, arg_index, object, object_index|
-        yield arg, arg_index, object, object_index
+        yield({arg, arg_index, object, object_index})
       end
       Splat.at(a_def, objects) do |arg, arg_index, object, object_index|
-        yield arg, arg_index, object, object_index
+        yield({arg, arg_index, object, object_index})
       end
     end
 
@@ -354,7 +354,7 @@ module Crystal
         obj = objects[i]?
         break unless obj
 
-        yield a_def.args[i], i, obj, i
+        yield({a_def.args[i], i, obj, i})
         i += 1
       end
       nil
@@ -374,7 +374,7 @@ module Crystal
         obj = objects[obj_index]?
         break unless obj
 
-        yield a_def.args[splat_index], splat_index, obj, obj_index
+        yield({a_def.args[splat_index], splat_index, obj, obj_index})
       end
 
       nil

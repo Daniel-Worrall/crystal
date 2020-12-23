@@ -330,7 +330,7 @@ module Crystal
       scope = get_current_debug_scope(location)
       return false unless scope
 
-      var = yield scope, file, location.line_number, debug_type
+      var = yield({scope, file, location.line_number, debug_type})
       expr = di_builder.create_expression(nil, 0)
       if basic_block
         block = basic_block

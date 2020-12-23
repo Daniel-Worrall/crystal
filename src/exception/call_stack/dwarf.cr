@@ -60,7 +60,7 @@ struct Exception::CallStack
       end
 
       if low_pc && high_pc && name
-        yield low_pc, high_pc, name
+        yield({low_pc, high_pc, name})
       end
     end
   end

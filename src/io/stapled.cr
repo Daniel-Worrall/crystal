@@ -112,7 +112,7 @@ class IO::Stapled < IO
       IO.pipe(read_blocking, write_blocking) do |b_read, b_write|
         a, b = new(a_read, b_write, true), new(b_read, a_write, true)
         begin
-          yield a, b
+          yield({a, b})
         ensure
           a.close
           b.close

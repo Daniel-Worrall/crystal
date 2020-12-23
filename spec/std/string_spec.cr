@@ -1209,7 +1209,7 @@ describe "String" do
     end
 
     it "subs with regex and block" do
-      actual = "foo booor booooz".sub(/o+/) do |str|
+      actual = "foo booor booooz".sub(/o+/) do |str, _|
         "#{str}#{str.size}"
       end
       actual.should eq("foo2 booor booooz")
@@ -1455,7 +1455,7 @@ describe "String" do
     end
 
     it "gsubs with regex and block" do
-      actual = "foo booor booooz".gsub(/o+/) do |str|
+      actual = "foo booor booooz".gsub(/o+/) do |str, _|
         "#{str}#{str.size}"
       end
       actual.should eq("foo2 booo3r boooo4z")

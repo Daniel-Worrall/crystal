@@ -277,7 +277,7 @@ module Crystal
       index_var = node.vars[2]?
 
       entries.each_with_index do |entry, i|
-        key, value = yield entry, value_var
+        key, value = yield entry # , value_var TODO
 
         @vars[key_var.name] = key
         @vars[value_var.name] = value if value_var

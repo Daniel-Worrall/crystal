@@ -50,9 +50,9 @@ module Crystal
               value = read_attribute_value(attr.form)
               attributes << {attr.at, attr.form, value}
             end
-            yield code, abbrev, attributes
+            yield({code, abbrev, attributes})
           else
-            yield code, nil, attributes
+            yield({code, nil, attributes})
           end
         end
       end

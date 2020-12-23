@@ -325,7 +325,7 @@ module Crystal
 
     def each
       @filters.each do |key, value|
-        yield key, value
+        yield({key, value})
       end
     end
 
